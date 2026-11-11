@@ -62,9 +62,11 @@ Setelah mengubah konfigurasi di hosting, jalankan `php artisan config:cache`; se
 
 ## Lagu Sempurna
 
-Tombol **Lagu kita → Putar lagu kita** memuat [video musik resmi GP Records](https://www.youtube.com/watch?v=jStNaVCW838) lewat pemutar YouTube. Tidak ada audio yang diputar otomatis saat halaman pertama dibuka. Menutup panel besar mengecilkan video ke pemutar kecil dan lagu tetap berjalan; buka kembali lewat tombol di pemutar kecil atau tombol **Lagu kita**. Pemutar membutuhkan koneksi internet dan izin pemutaran dari browser/YouTube. Tautan langsung YouTube tetap tersedia jika embed dibatasi.
+Tombol **Lagu kita → Putar lagu kita** memuat [video musik resmi GP Records](https://www.youtube.com/watch?v=jStNaVCW838) lewat pemutar YouTube. Tidak ada audio yang diputar otomatis saat halaman pertama dibuka. Menutup panel besar mengecilkan video ke pemutar kecil dan lagu tetap berjalan; buka kembali lewat tombol di pemutar kecil atau tombol **Lagu kita**. [Aturan YouTube](https://developers.google.com/youtube/terms/developer-policies) tidak mengizinkan video diputar di latar ketika pemutarnya tidak ditampilkan. Pemutar membutuhkan koneksi internet dan izin pemutaran dari browser/YouTube. Tautan langsung YouTube tetap tersedia jika embed dibatasi.
 
-Jika memiliki file lagu yang boleh Anda gunakan, taruh di `public/audio/lagu-kita.mp3`, lalu atur:
+Untuk menyembunyikan panel **sepenuhnya** sambil lagu terus berjalan, gunakan file audio yang boleh Anda pakai. Letakkan file tersebut dengan nama `public/audio/lagu-kita.mp3`. Website akan memilihnya secara otomatis saat halaman dimuat. Pada mode audio lokal, menutup panel tidak menghentikan lagu; buka kembali melalui tombol **Lagu kita** untuk mengatur putar/jeda. Tidak perlu mengubah `.env` bila memakai nama file tersebut.
+
+Jika memilih nama atau lokasi file yang berbeda, atur:
 
 ```dotenv
 ANNIVERSARY_MUSIC_PATH=audio/lagu-kita.mp3

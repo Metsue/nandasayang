@@ -102,6 +102,30 @@ try {
         assert.equal(localEntry.status(), 200, 'XAMPP entry redirects to the working application');
         assert.match(await page.title(), /Nanda/);
     }
+    const audioContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const audioPage = await audioContext.newPage();
+    await audioPage.route(url, async route => {
+        const response = await route.fetch();
+        const body = (await response.text()).replace(/"musicPath":(?:null|"[^"]*")/, '"musicPath":"/audio/lagu-kita.mp3"');
+        await route.fulfill({ response, body });
+    });
+    await audioPage.addInitScript(() => {
+        window.Audio = class extends EventTarget {
+            play() { this.dispatchEvent(new Event('play')); return Promise.resolve(); }
+            pause() { this.dispatchEvent(new Event('pause')); }
+        };
+    });
+    await audioPage.goto(url);
+    await audioPage.locator('#music-toggle').click();
+    await audioPage.locator('#music-play').click();
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true);
+    await audioPage.locator('#music-close').click();
+    assert.equal(await audioPage.locator('#music-panel').isVisible(), false, 'Local audio hides the full player');
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true, 'Local audio stays playing');
+    await audioPage.locator('#music-toggle').click();
+    await audioPage.locator('#music-play').click();
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false);
+    await audioContext.close();
     const noJS = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
     const staticPage = await noJS.newPage();
     await staticPage.goto(url);

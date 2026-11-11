@@ -11,6 +11,9 @@ class AnniversaryController extends Controller
     public function __invoke(): View
     {
         $anniversary = config('anniversary');
+        if (empty($anniversary['music_path']) && is_file(public_path('audio/lagu-kita.mp3'))) {
+            $anniversary['music_path'] = 'audio/lagu-kita.mp3';
+        }
         $start = null;
         $date = $anniversary['start_date'];
 
