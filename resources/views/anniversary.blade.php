@@ -10,8 +10,8 @@
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="preload" href="{{ asset('fonts/cormorant.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/dm-sans.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="{{ asset('css/anniversary.css') }}?v=3">
-    <script src="{{ asset('js/anniversary.js') }}?v=3" defer></script>
+    <link rel="stylesheet" href="{{ asset('css/anniversary.css') }}?v=4">
+    <script src="{{ asset('js/anniversary.js') }}?v=4" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Langsung ke cerita kita</a>
@@ -132,7 +132,7 @@
 
     <footer class="site-footer section-shell"><a class="brand" href="#home">Untuk Nanda Aula Selfiyana<span class="brand-dot">.</span></a><p>Dibuat oleh Indra, dengan cinta yang nggak habis-habis. <span aria-hidden="true">♡</span></p><a href="#home" class="footer-top">Ke awal cerita <span aria-hidden="true">↑</span></a></footer>
 
-    <aside class="music-panel" id="music-panel" hidden aria-label="Pemutar lagu kita"><div class="music-panel-heading"><span class="eyebrow">OUR LITTLE SOUNDTRACK</span><button class="icon-button" id="music-close" aria-label="Tutup panel musik"><x-icon name="close"/></button></div><div class="track-info"><span class="record" aria-hidden="true"><span>♡</span></span><div><h3>Sempurna</h3><p>Andra and The Backbone</p><span class="handwritten">lagu kita, rasa kita.</span></div></div><div id="youtube-container" class="youtube-player" hidden><div id="youtube-player"></div></div><button class="mini-expand" id="music-expand-mini" hidden aria-label="Buka kembali pemutar lagu Sempurna"><span>Sempurna ♡</span><span>Buka pemutar ↗</span></button><button class="button button-primary music-play" id="music-play"><x-icon name="play"/><span>Putar lagu kita</span></button><p class="music-status" id="music-status" aria-live="polite">Musik mulai setelah kamu menekan putar.</p><a id="music-fallback" class="text-link" href="{{ $anniversary['music_url'] }}" target="_blank" rel="noopener noreferrer">Dengarkan di YouTube ↗</a></aside>
+    <aside class="music-panel" id="music-panel" hidden aria-label="Pemutar lagu kita"><div class="music-panel-heading"><span class="eyebrow">OUR LITTLE SOUNDTRACK</span><button class="icon-button" id="music-close" aria-label="Tutup musik dan hentikan lagu"><x-icon name="close"/></button></div><div class="track-info"><span class="record" aria-hidden="true"><span>♡</span></span><div><h3>Sempurna</h3><p>Andra and The Backbone</p><span class="handwritten">lagu kita, rasa kita.</span></div></div><div id="youtube-container" class="youtube-player" hidden><div id="youtube-player"></div></div><button class="button button-primary music-play" id="music-play"><x-icon name="play"/><span>Putar lagu kita</span></button><p class="music-status" id="music-status" aria-live="polite">Musik mulai setelah kamu menekan putar.</p><a id="music-fallback" class="text-link" href="{{ $anniversary['music_url'] }}" target="_blank" rel="noopener noreferrer">Dengarkan di YouTube ↗</a></aside>
 
     <dialog class="lightbox" id="photo-dialog" aria-label="Album kenangan"><button class="dialog-close icon-button" data-close aria-label="Tutup foto"><x-icon name="close"/></button><div class="lightbox-image-wrap"><img id="lightbox-image" src="{{ asset('images/galeri-seni.webp') }}" alt=""><button class="lightbox-prev icon-button" id="photo-prev" aria-label="Foto sebelumnya">←</button><button class="lightbox-next icon-button" id="photo-next" aria-label="Foto berikutnya">→</button></div><div class="lightbox-caption"><p id="lightbox-caption" class="handwritten"></p><span id="lightbox-count"></span></div></dialog>
 

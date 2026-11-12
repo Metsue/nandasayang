@@ -31,15 +31,12 @@ body{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.js-ready .reveal{opacity:1;translate:none}.confetti{display:none}.love-ribbon>div{transform:none}}
 main{overflow-x:clip}
 .music-panel{max-height:calc(100dvh - 100px);overflow-y:auto}
+.music-panel-heading{position:sticky;top:0;z-index:2;background:#fffaf7}
+.music-panel-heading .icon-button{width:44px;height:44px;flex:none}
 .site-header .brand{min-width:0;font-size:25px;letter-spacing:-.8px}
 .site-header .brand-name{white-space:normal;line-height:1}
 .site-header .brand-name .brand-dot{margin-left:0}
-.music-panel.compact{top:auto;bottom:14px;right:14px;width:224px;padding:10px;max-height:calc(100dvh - 28px);border-radius:10px}
-.music-panel.compact .music-panel-heading,.music-panel.compact .track-info,.music-panel.compact .music-play,.music-panel.compact .music-status,.music-panel.compact #music-fallback{display:none}
-.music-panel.compact .youtube-player{width:200px;height:200px;margin:0}
-.mini-expand{width:100%;display:flex;justify-content:space-between;align-items:center;padding:9px 2px 1px;background:transparent;font-size:10px;color:var(--rose)}
-.mini-expand span:first-child{font-family:var(--serif);font-size:15px;color:var(--ink)}
-@media(max-width:680px){.site-header .brand{flex:1 1 auto;font-size:20px;line-height:1;letter-spacing:-.5px;white-space:normal;gap:5px}.site-header .brand-heart{flex:none}.site-header .brand-name{max-width:190px}.site-header .music-toggle{flex:none}.site-footer .brand{font-size:23px;white-space:normal;justify-content:center;line-height:1.1}.music-panel.compact{bottom:10px;right:10px}}
+@media(max-width:680px){.site-header .brand{flex:1 1 auto;font-size:20px;line-height:1;letter-spacing:-.5px;white-space:normal;gap:5px}.site-header .brand-heart{flex:none}.site-header .brand-name{max-width:190px}.site-header .music-toggle{flex:none}.site-footer .brand{font-size:23px;white-space:normal;justify-content:center;line-height:1.1}}
 @media(max-width:680px){.time-intro h2 br{display:block}.chapter-content p{font-size:11px}.hero-description{font-size:12px}}
 
 /* Phone layouts keep the scrapbook details while giving text and touch room. */
@@ -131,8 +128,7 @@ button,a{touch-action:manipulation}
     .music-panel-heading .icon-button{width:44px;height:44px}
     .music-play{min-height:48px;font-size:12px}
     .music-status,.music-panel>.text-link{font-size:12px}
-    .music-panel>.text-link,.mini-expand{min-height:44px}
-    .music-panel.compact{bottom:max(10px,env(safe-area-inset-bottom,0px));right:max(10px,env(safe-area-inset-right,0px))}
+    .music-panel>.text-link{min-height:44px}
 }
 
 @media(max-width:480px){
@@ -156,11 +152,10 @@ button,a{touch-action:manipulation}
     .lightbox-image-wrap>img{height:calc(100dvh - 145px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
     .lightbox-caption{padding-top:8px}
     .music-panel{top:12px;bottom:auto;max-height:calc(100dvh - 24px)}
-    .music-panel.compact{top:auto;bottom:10px}
 }
 
 @media(hover:none) and (pointer:coarse){
-    .music-toggle,.filter-button,.text-link,.mini-expand,.music-play,.site-header nav a{min-height:44px}
+    .music-toggle,.filter-button,.text-link,.music-play,.site-header nav a{min-height:44px}
     .site-header nav a{display:inline-flex;align-items:center}
     .button:hover,.love-jar:hover,.puzzle-tile:hover{transform:none}
     .memory-card:hover{transform:rotate(var(--tilt));box-shadow:0 3px 17px #65454b0d}

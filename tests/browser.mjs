@@ -121,18 +121,57 @@ try {
     assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true);
     await audioPage.locator('#music-close').click();
     assert.equal(await audioPage.locator('#music-panel').isVisible(), false, 'Local audio hides the full player');
-    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true, 'Local audio stays playing');
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false, 'Closing stops local audio');
     await audioPage.locator('#music-toggle').click();
     await audioPage.locator('#music-play').click();
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true, 'Local audio can play again');
+    await audioPage.locator('#music-toggle').click();
+    assert.equal(await audioPage.locator('#music-panel').isVisible(), false, 'Header toggle also closes the panel');
     assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false);
     await audioContext.close();
+    const ytContext = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    const ytPage = await ytContext.newPage();
+    await ytPage.addInitScript(() => {
+        window.__ytStats = { played: 0, stopped: 0, destroyed: 0 };
+        window.YT = { Player: class {
+            constructor(id, options) {
+                this.options = options;
+                this.iframe = document.createElement('iframe');
+                this.iframe.id = id;
+                document.getElementById(id).replaceWith(this.iframe);
+                setTimeout(() => options.events.onReady({ target: this }), 0);
+            }
+            setVolume() {}
+            getIframe() { return this.iframe; }
+            playVideo() { window.__ytStats.played++; this.options.events.onStateChange({ data: 1 }); }
+            pauseVideo() { this.options.events.onStateChange({ data: 2 }); }
+            stopVideo() { window.__ytStats.stopped++; this.options.events.onStateChange({ data: 0 }); }
+            destroy() { window.__ytStats.destroyed++; this.iframe.remove(); }
+        } };
+    });
+    await ytPage.goto(url);
+    await ytPage.locator('#music-toggle').click();
+    await ytPage.locator('#music-play').click();
+    await ytPage.waitForFunction(() => document.querySelector('#music-toggle').classList.contains('playing'));
+    await ytPage.locator('#music-close').click();
+    assert.equal(await ytPage.locator('#music-panel').isVisible(), false, 'YouTube panel fully closes');
+    assert.equal(await ytPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false, 'YouTube stops when closed');
+    assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 1, stopped: 1, destroyed: 1 });
+    assert.equal(await ytPage.locator('#youtube-container iframe').count(), 0, 'Stopped YouTube iframe is removed');
+    await ytPage.locator('#music-toggle').click();
+    await ytPage.locator('#music-play').click();
+    await ytPage.waitForFunction(() => document.querySelector('#music-toggle').classList.contains('playing'));
+    await ytPage.locator('#music-toggle').click();
+    assert.equal(await ytPage.locator('#music-panel').isVisible(), false);
+    assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 2, stopped: 2, destroyed: 2 });
+    await ytContext.close();
     const noJS = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
     const staticPage = await noJS.newPage();
     await staticPage.goto(url);
     assert.equal(await staticPage.locator('.memory-card:visible').count(), 12);
     assert.ok(await staticPage.locator('#hero-title').isVisible());
     await noJS.close();
-    console.log('PASS: page, images, counter, gallery, lightbox, 12 notes, complete puzzle, letter, focus, hug, music fallback, 4 screen sizes, reduced motion, no-JS content.');
+    console.log('PASS: page, images, counter, gallery, lightbox, 12 notes, complete puzzle, letter, focus, hug, music stop/replay, fallback, 4 screen sizes, reduced motion, no-JS content.');
 } finally {
     await browser.close();
 }

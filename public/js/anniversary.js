@@ -285,13 +285,14 @@
     const panel = $('#music-panel');
     const toggle = $('#music-toggle');
     const playButton = $('#music-play');
-    const miniExpand = $('#music-expand-mini');
     const musicStatus = $('#music-status');
+    const youtubeContainer = $('#youtube-container');
     let player = null;
     let localAudio = null;
     let playing = false;
     let ready = false;
     let loadTimer;
+    let playerGeneration = 0;
     function setPlaying(value) {
         playing = value;
         toggle.classList.toggle('playing', value);
@@ -299,40 +300,53 @@
         $('span', playButton).textContent = value ? 'Jeda lagu' : 'Putar lagu kita';
         playButton.setAttribute('aria-label', value ? 'Jeda lagu Sempurna' : 'Putar lagu Sempurna');
     }
+    function stopYouTube() {
+        playerGeneration++;
+        if (player) {
+            try { player.stopVideo(); } catch { /* The iframe may already be gone. */ }
+            try { player.destroy(); } catch { /* Replacing it below still stops playback. */ }
+            player = null;
+        }
+        youtubeContainer.replaceChildren(Object.assign(document.createElement('div'), { id: 'youtube-player' }));
+        youtubeContainer.hidden = true;
+        ready = false;
+    }
     function closeMusic() {
-        const keepVideoVisible = !data.musicPath && (!$('#youtube-container').hidden || playButton.disabled);
-        panel.hidden = !keepVideoVisible;
-        panel.classList.toggle('compact', keepVideoVisible);
-        miniExpand.hidden = !keepVideoVisible;
+        clearTimeout(loadTimer);
+        window.onYouTubeIframeAPIReady = undefined;
+        if (localAudio) {
+            localAudio.pause();
+            try { localAudio.currentTime = 0; } catch { /* Audio may not be loaded yet. */ }
+        }
+        stopYouTube();
+        playButton.disabled = false;
+        setPlaying(false);
+        musicStatus.textContent = 'Musik berhenti. Tekan putar jika ingin mendengarkan lagi.';
+        panel.hidden = true;
         toggle.setAttribute('aria-expanded', 'false');
         toggle.focus({ preventScroll: true });
     }
-    function expandMusic() {
+    function openMusic() {
         panel.hidden = false;
-        panel.classList.remove('compact');
-        miniExpand.hidden = true;
         toggle.setAttribute('aria-expanded', 'true');
     }
     toggle.addEventListener('click', () => {
-        if (!panel.hidden && !panel.classList.contains('compact')) return closeMusic();
-        expandMusic();
+        if (!panel.hidden) return closeMusic();
+        openMusic();
     });
-    miniExpand.addEventListener('click', expandMusic);
     $('#music-close').addEventListener('click', closeMusic);
     panel.addEventListener('keydown', event => { if (event.key === 'Escape') closeMusic(); });
     function musicError() {
         clearTimeout(loadTimer);
+        stopYouTube();
         playButton.disabled = false;
         setPlaying(false);
         musicStatus.textContent = 'Pemutar belum bisa terhubung. Kamu tetap bisa mendengarkan lagu kita lewat tautan YouTube di bawah.';
-        if (panel.classList.contains('compact')) {
-            panel.hidden = true;
-            panel.classList.remove('compact');
-            miniExpand.hidden = true;
-        }
     }
     function createPlayer() {
-        $('#youtube-container').hidden = false;
+        if (panel.hidden) return;
+        const generation = ++playerGeneration;
+        youtubeContainer.hidden = false;
         player = new window.YT.Player('youtube-player', {
             host: 'https://www.youtube-nocookie.com',
             videoId: data.videoId,
@@ -340,6 +354,7 @@
             playerVars: { playsinline: 1, rel: 0, origin: location.origin },
             events: {
                 onReady(event) {
+                    if (generation !== playerGeneration) return;
                     clearTimeout(loadTimer);
                     ready = true;
                     playButton.disabled = false;
@@ -350,6 +365,7 @@
                     if (!panel.hidden) event.target.playVideo();
                 },
                 onStateChange(event) {
+                    if (generation !== playerGeneration) return;
                     setPlaying(event.data === 1);
                     if (event.data === 1) {
                         musicStatus.textContent = 'Sempurna — menemani cerita kecil kita. ♡';
@@ -357,7 +373,7 @@
                     if (event.data === 2) musicStatus.textContent = 'Lagu dijeda. Lanjutkan kapan pun kamu mau.';
                     if (event.data === 0) musicStatus.textContent = 'Lagunya selesai. Rasa sayangnya belum. ♡';
                 },
-                onError: musicError,
+                onError() { if (generation === playerGeneration) musicError(); },
             },
         });
     }
@@ -386,15 +402,16 @@
         musicStatus.textContent = 'Menghubungkan lagu kita…';
         loadTimer = setTimeout(musicError, 15000);
         if (window.YT?.Player) {
-            player?.destroy();
             createPlayer();
-        } else if (!$('#youtube-api')) {
+        } else {
             window.onYouTubeIframeAPIReady = createPlayer;
-            const script = document.createElement('script');
-            script.id = 'youtube-api';
-            script.src = 'https://www.youtube.com/iframe_api';
-            script.onerror = () => { script.remove(); musicError(); };
-            document.head.append(script);
+            if (!$('#youtube-api')) {
+                const script = document.createElement('script');
+                script.id = 'youtube-api';
+                script.src = 'https://www.youtube.com/iframe_api';
+                script.onerror = () => { script.remove(); musicError(); };
+                document.head.append(script);
+            }
         }
     });
 })();
