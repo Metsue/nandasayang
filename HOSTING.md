@@ -68,7 +68,7 @@ Setelah mengubah konfigurasi di hosting, jalankan `php artisan config:cache`; se
 
 ## Lagu Sempurna
 
-Tombol **Lagu kita → Putar lagu kita** memuat [video musik resmi GP Records](https://www.youtube.com/watch?v=jStNaVCW838) lewat pemutar YouTube. Tidak ada audio yang diputar otomatis saat halaman pertama dibuka. Tombol X menutup pemutar dan menghentikan lagu; buka kembali lewat tombol **Lagu kita** jika ingin mendengarkan lagi. Pemutar membutuhkan koneksi internet dan izin pemutaran dari browser/YouTube. Tautan langsung YouTube tetap tersedia jika embed dibatasi.
+Tombol **Lagu kita → Putar lagu kita** memuat [video musik resmi GP Records](https://www.youtube.com/watch?v=jStNaVCW838) lewat pemutar YouTube. Tidak ada audio yang diputar otomatis saat halaman pertama dibuka. Tombol garis mengecilkan pemutar tanpa menghentikan lagu; geser pegangan **Sempurna** untuk memindahkannya. Pada mode YouTube, videonya tetap terlihat dengan ukuran minimum 200 × 200 piksel sesuai [ketentuan pemutar YouTube](https://developers.google.com/youtube/terms/required-minimum-functionality). Tombol panah membesarkan lagi, sedangkan X menutup pemutar dan menghentikan lagu. Pemutar membutuhkan koneksi internet dan izin pemutaran dari browser/YouTube. Tautan langsung YouTube tetap tersedia jika embed dibatasi.
 
 Untuk memakai file audio yang boleh Anda pakai, letakkan file tersebut dengan nama `public/audio/lagu-kita.mp3`. Website akan memilihnya secara otomatis saat halaman dimuat. Pada mode audio lokal, tombol X juga menghentikan lagu. Tidak perlu mengubah `.env` bila memakai nama file tersebut.
 

@@ -106,6 +106,42 @@ try {
     const after = await page.locator('.puzzle-tile').evaluateAll(els => els.map(el => el.dataset.piece));
     assert.deepEqual(after.slice(0, 2), [before[1], before[0]], 'Puzzle swaps with touch input');
 
+    const musicContext = await browser.newContext({ ...devices['Pixel 7'], reducedMotion: 'reduce' });
+    const musicPage = await musicContext.newPage();
+    await musicPage.route(url, async route => {
+        const response = await route.fetch();
+        const body = (await response.text()).replace(/"musicPath":(?:null|"[^"]*")/, '"musicPath":"/audio/lagu-kita.mp3"');
+        await route.fulfill({ response, body });
+    });
+    await musicPage.addInitScript(() => {
+        window.Audio = class extends EventTarget {
+            play() { this.dispatchEvent(new Event('play')); return Promise.resolve(); }
+            pause() { this.dispatchEvent(new Event('pause')); }
+        };
+    });
+    await musicPage.goto(url);
+    await musicPage.locator('#music-toggle').tap();
+    await musicPage.locator('#music-play').tap();
+    await musicPage.locator('#music-minimize').tap();
+    const miniBefore = await musicPage.locator('#music-panel').boundingBox();
+    const grip = await musicPage.locator('#music-drag').boundingBox();
+    const x = grip.x + grip.width / 2;
+    const y = grip.y + grip.height / 2;
+    const musicCdp = await musicContext.newCDPSession(musicPage);
+    await musicCdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+    for (let step = 1; step <= 6; step++) {
+        await musicCdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x - step * 12, y: y - step * 18 }] });
+    }
+    await musicCdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    const miniAfter = await musicPage.locator('#music-panel').boundingBox();
+    assert.ok(miniAfter.x < miniBefore.x - 40 && miniAfter.y < miniBefore.y - 60, 'A finger can move the mini player');
+    assert.equal(await musicPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true, 'Touch drag keeps music playing');
+    await musicPage.locator('#music-mini-close').tap();
+    await musicPage.waitForFunction(() => document.querySelector('#music-panel').hidden);
+    assert.equal(await musicPage.locator('#music-panel').isVisible(), false);
+    assert.equal(await musicPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false);
+    await musicContext.close();
+
     await page.evaluate(() => scrollTo(0, 0));
     await page.screenshot({ path: 'test-results/android-hero.png' });
     await page.locator('#kenangan').screenshot({ path: 'test-results/android-gallery.png' });
@@ -116,7 +152,7 @@ try {
     await page.locator('#cerita .section-heading').scrollIntoViewIfNeeded();
     await page.waitForFunction(() => document.querySelector('#cerita .reveal').classList.contains('visible'));
     assert.deepEqual(errors, [], 'No JavaScript errors or missing local assets');
-    console.log('PASS: Android touch emulation, 9 portrait/landscape sizes, readable layouts, navigation, photo swipe, vertical/cancelled gestures, letter scrolling, music controls, puzzle taps, normal/reduced motion.');
+    console.log('PASS: Android touch emulation, 9 portrait/landscape sizes, readable layouts, navigation, photo swipe, vertical/cancelled gestures, letter scrolling, draggable mini music player, puzzle taps, normal/reduced motion.');
 } finally {
     await browser.close();
 }

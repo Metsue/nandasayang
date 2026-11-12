@@ -287,12 +287,16 @@
     const playButton = $('#music-play');
     const musicStatus = $('#music-status');
     const youtubeContainer = $('#youtube-container');
+    const dragHandle = $('#music-drag');
+    const maximizeButton = $('#music-maximize');
     let player = null;
     let localAudio = null;
     let playing = false;
     let ready = false;
     let loadTimer;
     let playerGeneration = 0;
+    let miniPosition = null;
+    let drag = null;
     function setPlaying(value) {
         playing = value;
         toggle.classList.toggle('playing', value);
@@ -323,18 +327,92 @@
         setPlaying(false);
         musicStatus.textContent = 'Musik berhenti. Tekan putar jika ingin mendengarkan lagi.';
         panel.hidden = true;
+        panel.classList.remove('minimized');
+        clearMiniPosition();
+        miniPosition = null;
+        drag = null;
         toggle.setAttribute('aria-expanded', 'false');
         toggle.focus({ preventScroll: true });
+    }
+    function clearMiniPosition() {
+        for (const side of ['left', 'top', 'right', 'bottom']) panel.style.removeProperty(side);
+    }
+    function positionMini(left, top) {
+        const viewport = window.visualViewport;
+        const minLeft = (viewport?.offsetLeft ?? 0) + 8;
+        const minTop = (viewport?.offsetTop ?? 0) + 8;
+        const maxLeft = minLeft + (viewport?.width ?? innerWidth) - panel.offsetWidth - 16;
+        const maxTop = minTop + (viewport?.height ?? innerHeight) - panel.offsetHeight - 16;
+        miniPosition = {
+            left: Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft))),
+            top: Math.max(minTop, Math.min(top, Math.max(minTop, maxTop))),
+        };
+        panel.style.left = `${miniPosition.left}px`;
+        panel.style.top = `${miniPosition.top}px`;
+        panel.style.right = 'auto';
+        panel.style.bottom = 'auto';
+    }
+    function minimizeMusic() {
+        if (panel.hidden || panel.classList.contains('minimized')) return;
+        panel.classList.add('minimized');
+        if (miniPosition) positionMini(miniPosition.left, miniPosition.top);
+        maximizeButton.focus({ preventScroll: true });
+    }
+    function maximizeMusic() {
+        if (!panel.classList.contains('minimized')) return;
+        panel.classList.remove('minimized');
+        clearMiniPosition();
+        $('#music-minimize').focus({ preventScroll: true });
     }
     function openMusic() {
         panel.hidden = false;
         toggle.setAttribute('aria-expanded', 'true');
     }
     toggle.addEventListener('click', () => {
+        if (panel.classList.contains('minimized')) return maximizeMusic();
         if (!panel.hidden) return closeMusic();
         openMusic();
     });
+    $('#music-minimize').addEventListener('click', minimizeMusic);
     $('#music-close').addEventListener('click', closeMusic);
+    function bindMiniAction(button, action) {
+        button.addEventListener('click', action);
+        // Touch can suppress a synthetic click after a drag. Handle the release directly.
+        button.addEventListener('touchend', event => {
+            event.preventDefault();
+            action();
+        }, { passive: false });
+    }
+    bindMiniAction(maximizeButton, maximizeMusic);
+    bindMiniAction($('#music-mini-close'), closeMusic);
+    dragHandle.addEventListener('pointerdown', event => {
+        if (!panel.classList.contains('minimized')) return;
+        const bounds = panel.getBoundingClientRect();
+        drag = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, left: bounds.left, top: bounds.top };
+        dragHandle.setPointerCapture(event.pointerId);
+    });
+    dragHandle.addEventListener('pointermove', event => {
+        if (!drag || event.pointerId !== drag.pointerId) return;
+        positionMini(drag.left + event.clientX - drag.x, drag.top + event.clientY - drag.y);
+    });
+    for (const eventName of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+        dragHandle.addEventListener(eventName, () => { drag = null; });
+    }
+    dragHandle.addEventListener('keydown', event => {
+        const moves = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] };
+        const move = moves[event.key];
+        if (!move || !panel.classList.contains('minimized')) return;
+        event.preventDefault();
+        const bounds = panel.getBoundingClientRect();
+        positionMini(bounds.left + move[0], bounds.top + move[1]);
+    });
+    const keepMiniInView = () => {
+        if (!panel.classList.contains('minimized')) return;
+        const bounds = panel.getBoundingClientRect();
+        positionMini(miniPosition?.left ?? bounds.left, miniPosition?.top ?? bounds.top);
+    };
+    addEventListener('resize', keepMiniInView);
+    window.visualViewport?.addEventListener('resize', keepMiniInView);
     panel.addEventListener('keydown', event => { if (event.key === 'Escape') closeMusic(); });
     function musicError() {
         clearTimeout(loadTimer);
@@ -342,11 +420,13 @@
         playButton.disabled = false;
         setPlaying(false);
         musicStatus.textContent = 'Pemutar belum bisa terhubung. Kamu tetap bisa mendengarkan lagu kita lewat tautan YouTube di bawah.';
+        maximizeMusic();
     }
     function createPlayer() {
         if (panel.hidden) return;
         const generation = ++playerGeneration;
         youtubeContainer.hidden = false;
+        requestAnimationFrame(keepMiniInView);
         player = new window.YT.Player('youtube-player', {
             host: 'https://www.youtube-nocookie.com',
             videoId: data.videoId,

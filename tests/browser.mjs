@@ -119,6 +119,11 @@ try {
     await audioPage.locator('#music-toggle').click();
     await audioPage.locator('#music-play').click();
     assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true);
+    await audioPage.locator('#music-minimize').click();
+    assert.equal(await audioPage.locator('#music-panel').evaluate(el => el.classList.contains('minimized')), true);
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true, 'Minimizing local audio keeps playing');
+    await audioPage.locator('#music-maximize').click();
+    assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), true);
     await audioPage.locator('#music-close').click();
     assert.equal(await audioPage.locator('#music-panel').isVisible(), false, 'Local audio hides the full player');
     assert.equal(await audioPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false, 'Closing stops local audio');
@@ -153,7 +158,26 @@ try {
     await ytPage.locator('#music-toggle').click();
     await ytPage.locator('#music-play').click();
     await ytPage.waitForFunction(() => document.querySelector('#music-toggle').classList.contains('playing'));
-    await ytPage.locator('#music-close').click();
+    await ytPage.locator('#music-minimize').click();
+    assert.equal(await ytPage.locator('#music-panel').evaluate(el => el.classList.contains('minimized')), true);
+    assert.equal(await ytPage.locator('#youtube-container iframe').count(), 1, 'Minimizing keeps the same YouTube iframe');
+    assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 1, stopped: 0, destroyed: 0 });
+    const videoSize = await ytPage.locator('#youtube-container iframe').boundingBox();
+    assert.ok(videoSize.width >= 200 && videoSize.height >= 200, 'The minimized YouTube video remains visible at its minimum size');
+    const beforeDrag = await ytPage.locator('#music-panel').boundingBox();
+    const handle = await ytPage.locator('#music-drag').boundingBox();
+    await ytPage.mouse.move(handle.x + 18, handle.y + 20);
+    await ytPage.mouse.down();
+    await ytPage.mouse.move(handle.x - 62, handle.y - 80, { steps: 6 });
+    await ytPage.mouse.up();
+    const afterDrag = await ytPage.locator('#music-panel').boundingBox();
+    assert.ok(afterDrag.x < beforeDrag.x - 30 && afterDrag.y < beforeDrag.y - 30, 'The minimized player can be dragged');
+    assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 1, stopped: 0, destroyed: 0 }, 'Dragging does not interrupt playback');
+    await ytPage.locator('#music-maximize').click();
+    assert.equal(await ytPage.locator('#music-panel').evaluate(el => el.classList.contains('minimized')), false);
+    assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 1, stopped: 0, destroyed: 0 }, 'Maximizing does not interrupt playback');
+    await ytPage.locator('#music-minimize').click();
+    await ytPage.locator('#music-mini-close').click();
     assert.equal(await ytPage.locator('#music-panel').isVisible(), false, 'YouTube panel fully closes');
     assert.equal(await ytPage.locator('#music-toggle').evaluate(el => el.classList.contains('playing')), false, 'YouTube stops when closed');
     assert.deepEqual(await ytPage.evaluate(() => window.__ytStats), { played: 1, stopped: 1, destroyed: 1 });
@@ -171,7 +195,7 @@ try {
     assert.equal(await staticPage.locator('.memory-card:visible').count(), 12);
     assert.ok(await staticPage.locator('#hero-title').isVisible());
     await noJS.close();
-    console.log('PASS: page, images, counter, gallery, lightbox, 12 notes, complete puzzle, letter, focus, hug, music stop/replay, fallback, 4 screen sizes, reduced motion, no-JS content.');
+    console.log('PASS: page, images, counter, gallery, lightbox, 12 notes, complete puzzle, letter, focus, hug, music minimize/drag/maximize/close/replay, fallback, 4 screen sizes, reduced motion, no-JS content.');
 } finally {
     await browser.close();
 }

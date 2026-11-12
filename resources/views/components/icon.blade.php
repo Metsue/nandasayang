@@ -4,6 +4,8 @@
     @case('arrow') <path d="M5 12h14m-5-5 5 5-5 5"/> @break
     @case('down') <path d="M12 5v14m-5-5 5 5 5-5"/> @break
     @case('close') <path d="m6 6 12 12M6 18 18 6"/> @break
+    @case('minimize') <path d="M5 16h14"/> @break
+    @case('grip') <circle cx="8" cy="6" r="1"/><circle cx="16" cy="6" r="1"/><circle cx="8" cy="12" r="1"/><circle cx="16" cy="12" r="1"/><circle cx="8" cy="18" r="1"/><circle cx="16" cy="18" r="1"/> @break
     @case('music') <path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/> @break
     @case('play') <path d="m9 5 11 7-11 7V5Z"/> @break
     @case('mail') <rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/> @break
