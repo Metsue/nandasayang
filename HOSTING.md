@@ -1,5 +1,11 @@
 # Menayangkan website Untuk Nanda Aula Selfiyana
 
+## GitHub Pages
+
+Situs publik: **https://metsue.github.io/nandasayang/**. Workflow di `.github/workflows/pages.yml` merender halaman Laravel menjadi HTML, menyalin aset dari `public/`, lalu menerbitkannya setiap kali branch `main` diperbarui. Jalankan `npm run test:pages` untuk memeriksa hasil statis secara lokal.
+
+GitHub Pages menyajikan HTML, CSS, JavaScript, foto, dan font; PHP/Laravel hanya dipakai saat membangun halaman. Isi `.env` lokal tidak ikut diunggah. Untuk mengganti teks, foto, atau tanggal pada situs publik, ubah berkas sumber yang tercatat di Git lalu unggah ke `main`.
+
 Website anniversary Indra & Nanda, 15 November 2024–15 November 2026. Dibangun dengan Laravel 13, Blade, CSS, dan JavaScript. Tidak memerlukan database, Vite, atau build Node.js untuk ditayangkan.
 
 ## Membuka di komputer ini
@@ -90,6 +96,9 @@ php artisan test
 npm install
 npm run check
 npm run test:browser
+npm run test:mobile
 ```
 
 Pemeriksaan browser menggunakan Google Chrome lokal melalui Playwright dan secara default mengakses XAMPP di `http://localhost/nandasayang/public/`. Atur variabel `TEST_URL` jika menggunakan alamat lain. Hasil screenshot tersedia dalam `test-results` setelah pengujian.
+
+Pemeriksaan mobile menggunakan emulasi Android dengan input sentuh pada sembilan ukuran portrait/landscape (lebar 320–915 px), termasuk navigasi, geser foto, surat yang bisa digulir, panel musik, dan puzzle. Ini merupakan emulasi browser; pemeriksaan langsung di perangkat Android tetap dapat dilakukan melalui alamat hosting atau IP komputer pada jaringan yang sama.

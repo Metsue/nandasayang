@@ -136,13 +136,27 @@
             changePhoto(event.key === 'ArrowRight' ? 1 : -1);
         }
     });
-    let touchX = null;
-    $('#lightbox-image').addEventListener('touchstart', event => { touchX = event.changedTouches[0].screenX; }, { passive: true });
-    $('#lightbox-image').addEventListener('touchend', event => {
-        const delta = touchX === null ? 0 : event.changedTouches[0].screenX - touchX;
-        if (Math.abs(delta) > 55) changePhoto(delta < 0 ? 1 : -1);
-        touchX = null;
+    let photoTouch = null;
+    const lightboxImage = $('#lightbox-image');
+    lightboxImage.addEventListener('touchstart', event => {
+        const touch = event.touches[0];
+        photoTouch = event.touches.length === 1
+            ? { id: touch.identifier, x: touch.clientX, y: touch.clientY }
+            : null;
     }, { passive: true });
+    lightboxImage.addEventListener('touchend', event => {
+        const start = photoTouch;
+        photoTouch = null;
+        if (!start || event.touches.length || window.visualViewport?.scale > 1) return;
+        const touch = [...event.changedTouches].find(item => item.identifier === start.id);
+        if (!touch) return;
+        const dx = touch.clientX - start.x;
+        const dy = touch.clientY - start.y;
+        // Vertical scrolling and pinch zoom should never turn the album page.
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) changePhoto(dx < 0 ? 1 : -1);
+    }, { passive: true });
+    lightboxImage.addEventListener('touchcancel', () => { photoTouch = null; }, { passive: true });
+    photoDialog.addEventListener('close', () => { photoTouch = null; });
 
     function shuffle(items) {
         for (let i = items.length - 1; i > 0; i--) {

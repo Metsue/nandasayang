@@ -41,3 +41,131 @@ main{overflow-x:clip}
 .mini-expand span:first-child{font-family:var(--serif);font-size:15px;color:var(--ink)}
 @media(max-width:680px){.site-header .brand{flex:1 1 auto;font-size:20px;line-height:1;letter-spacing:-.5px;white-space:normal;gap:5px}.site-header .brand-heart{flex:none}.site-header .brand-name{max-width:190px}.site-header .music-toggle{flex:none}.site-footer .brand{font-size:23px;white-space:normal;justify-content:center;line-height:1.1}.music-panel.compact{bottom:10px;right:10px}}
 @media(max-width:680px){.time-intro h2 br{display:block}.chapter-content p{font-size:11px}.hero-description{font-size:12px}}
+
+/* Phone layouts keep the scrapbook details while giving text and touch room. */
+body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+button,a{touch-action:manipulation}
+.hero-copy,.chapter-content,.gallery-heading>div,.forever-copy{min-width:0}
+.letter-dialog,.lightbox,.music-panel{overscroll-behavior:contain}
+.lightbox{max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto}
+.lightbox-image-wrap>img{height:min(67dvh,680px);touch-action:pan-y pinch-zoom}
+.letter-dialog{max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.letter-dialog .dialog-close{position:sticky;float:right;top:10px;margin:10px 10px -50px 0}
+
+@media(max-width:900px){
+    .hero{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .site-header{gap:18px}
+    .site-header nav{flex-shrink:0;gap:16px}
+    .site-header .music-toggle{flex-shrink:0}
+}
+
+@media(max-width:680px){
+    .section-shell,.site-header{width:calc(100% - 40px)}
+    .section-space{padding-block:64px}
+    .site-header{height:auto;min-height:116px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;padding-top:max(14px,env(safe-area-inset-top,0px));padding-bottom:8px}
+    .site-header .brand{font-size:22px;min-height:44px}
+    .site-header nav{display:flex;grid-column:1 / -1;grid-row:2;justify-content:center;gap:clamp(16px,6vw,36px);font-size:12px}
+    .site-header nav a{min-height:44px;display:inline-flex;align-items:center;padding:8px 2px}
+    .site-header .music-toggle{min-height:44px;font-size:11px}
+    .hero{padding-top:36px;gap:18px;grid-template-columns:minmax(0,1fr)}
+    .hero h1{font-size:clamp(55px,16vw,78px)}
+    .hero-copy>.eyebrow{font-size:9px;letter-spacing:1.8px}
+    .hero-dedication{font-size:12px;gap:8px;flex-wrap:wrap}
+    .hero-description{font-size:14px;max-width:340px;line-height:1.85}
+    .hero-actions{flex-wrap:wrap;gap:6px 18px}
+    .hero-actions .button{min-height:48px;font-size:12px;padding-inline:20px}
+    .hero-actions .text-link{min-height:44px;font-size:12px}
+    .hero-footnote{max-width:330px;margin-inline:auto;font-size:21px}
+    .hero-art{width:min(350px,100%);height:auto;aspect-ratio:350 / 440;scale:1;left:0;margin:24px 0 0}
+    .hero-orbit{width:85.7%;height:auto;aspect-ratio:1;left:8%;top:12.5%}
+    .hero-photo-main{width:63.7%;top:5.5%;left:28.3%}
+    .hero-photo-main img{height:auto;aspect-ratio:203 / 264}
+    .hero-photo-small{width:55.7%;top:60.2%;left:1.5%}
+    .hero-photo-small img{height:auto;aspect-ratio:179 / 113}
+    .hero-photo-main figcaption{font-size:clamp(18px,5.6vw,22px)}
+    .hero-photo-small figcaption{font-size:clamp(15px,4.5vw,18px)}
+    .anniversary-stamp{width:23%;height:auto;aspect-ratio:1;right:1%;top:1.6%}
+    .doodle-heart{top:32%;font-size:clamp(60px,19vw,75px)}
+    .hero-flower{bottom:17%;right:1.4%}
+    .photo-corner-note{font-size:18px;right:3%}
+    h2{font-size:clamp(38px,10.5vw,48px)}
+    .section-heading>p:last-child,.gallery-heading>p{font-size:14px}
+    .time-counter{display:grid;grid-template-columns:minmax(0,1.35fr) auto repeat(2,minmax(0,1fr) auto) minmax(0,1fr);gap:5px;padding-inline:0}
+    .time-counter>div{min-width:0}
+    .time-counter strong{font-size:clamp(33px,10vw,46px)}
+    .time-counter div>span{font-size:9px;letter-spacing:1.3px}
+    .time-counter>p{grid-column:1 / -1;font-size:11px}
+    .time-keepsakes{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr)}
+    .time-keepsakes div>span{text-align:center;letter-spacing:.5px;font-size:8px}
+    .chapter-content .eyebrow{font-size:9px}
+    .chapter-content h3{font-size:30px}
+    .chapter-content p{font-size:14px;line-height:1.85}
+    .chapter-photo{height:250px}
+    .gallery-heading .handwritten{position:static;margin-top:14px;transform:rotate(-3deg);font-size:23px}
+    .gallery-filters{gap:8px}
+    .filter-button{min-height:44px;font-size:12px;padding:10px 14px}
+    .filter-button span{font-size:10px}
+    .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 16px}
+    .memory-caption{font-size:22px;line-height:1.2;min-height:0;overflow-wrap:anywhere}
+    .memory-meta{font-size:9px;gap:4px;flex-wrap:wrap}
+    .gallery-more{font-size:12px;min-height:48px}
+    .surprise-grid article>p:not(.jar-note):not(.puzzle-status){font-size:13px}
+    .card-kicker{font-size:9px}
+    .jar-card>.text-link,.puzzle-controls .text-link{font-size:12px;min-height:44px}
+    .puzzle-controls .icon-button{width:44px;height:44px}
+    .letter-intro>p:not(.eyebrow),.forever-copy>p:not(.eyebrow):not(.hug-response){font-size:14px}
+    .letter-intro h2{font-size:clamp(38px,10.5vw,46px)}
+    .envelope-hint{font-size:11px}
+    .forever-copy h2{font-size:clamp(32px,9vw,43px)}
+    .forever-copy>.button{font-size:12px;min-height:48px}
+    .site-footer p{font-size:11px}
+    .footer-top{font-size:12px;min-height:44px;display:inline-flex;align-items:center;gap:8px}
+    .site-footer{padding-bottom:max(25px,env(safe-area-inset-bottom,0px))}
+    .letter-paper>p{font-size:15px;line-height:1.9}
+    .lightbox{width:calc(100% - 24px)}
+    .lightbox-caption{align-items:flex-start;gap:10px}
+    .lightbox-caption .handwritten{font-size:24px;overflow-wrap:anywhere}
+    .lightbox-caption>span{font-size:11px;padding-top:4px}
+    .dialog-close,.lightbox-prev,.lightbox-next{width:44px;height:44px}
+    .music-panel{top:auto;bottom:max(12px,env(safe-area-inset-bottom,0px));right:max(12px,env(safe-area-inset-right,0px));width:360px;max-width:calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+    .music-panel-heading .icon-button{width:44px;height:44px}
+    .music-play{min-height:48px;font-size:12px}
+    .music-status,.music-panel>.text-link{font-size:12px}
+    .music-panel>.text-link,.mini-expand{min-height:44px}
+    .music-panel.compact{bottom:max(10px,env(safe-area-inset-bottom,0px));right:max(10px,env(safe-area-inset-right,0px))}
+}
+
+@media(max-width:480px){
+    .story-grid{gap:42px}
+    .story-chapter,.story-chapter:nth-child(2),.story-chapter:nth-child(3){grid-template-columns:minmax(0,1fr);gap:24px}
+    .chapter-photo{height:auto;aspect-ratio:1.2;margin-inline:8px}
+    .story-chapter:nth-child(2) .chapter-photo{order:0}
+    .chapter-content{padding-inline:5px}
+}
+
+@media(max-width:360px){
+    .section-shell,.site-header{width:calc(100% - 32px)}
+    .hero-actions{flex-direction:column}
+    .gallery-grid{gap:22px 12px}
+    .memory-caption{font-size:20px}
+    .jar-card,.puzzle-card{padding-inline:18px}
+}
+
+/* Short landscape viewports need room for the caption and reachable controls. */
+@media(max-height:500px) and (orientation:landscape){
+    .lightbox-image-wrap>img{height:calc(100dvh - 145px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+    .lightbox-caption{padding-top:8px}
+    .music-panel{top:12px;bottom:auto;max-height:calc(100dvh - 24px)}
+    .music-panel.compact{top:auto;bottom:10px}
+}
+
+@media(hover:none) and (pointer:coarse){
+    .music-toggle,.filter-button,.text-link,.mini-expand,.music-play,.site-header nav a{min-height:44px}
+    .site-header nav a{display:inline-flex;align-items:center}
+    .button:hover,.love-jar:hover,.puzzle-tile:hover{transform:none}
+    .memory-card:hover{transform:rotate(var(--tilt));box-shadow:0 3px 17px #65454b0d}
+    .memory-card:hover img{transform:none}
+    .photo-expand{opacity:1;transform:none}
+    .icon-button{min-width:44px;min-height:44px}
+    .button:active,.puzzle-tile:active{transform:scale(.97)}
+}

@@ -6,6 +6,10 @@ Laravel 13 + Blade, CSS, dan JavaScript. Foto asli, album dengan filter dan ligh
 
 **Buka lokal:** http://localhost/nandasayang/
 
+**Situs publik (GitHub Pages):** https://metsue.github.io/nandasayang/
+
+Setiap perubahan yang diunggah ke branch `main` akan dirender menjadi halaman statis dan diterbitkan otomatis oleh [workflow GitHub Pages](.github/workflows/pages.yml). Fitur interaktif tetap berjalan di browser. GitHub Pages tidak menjalankan Laravel/PHP saat pengunjung membuka situs.
+
 **Panduan instalasi, hosting, musik, personalisasi, dan pengujian:** [HOSTING.md](HOSTING.md).
 
 ```sh

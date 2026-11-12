@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "test:browser": "node tests/browser.mjs",
+    "test:mobile": "node tests/mobile.mjs",
+    "build:pages": "php scripts/build-pages.php",
+    "test:pages": "php scripts/build-pages.php && node tests/pages.mjs",
     "check": "node --check public/js/anniversary.js"
   },
   "devDependencies": {

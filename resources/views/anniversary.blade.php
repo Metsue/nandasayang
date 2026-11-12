@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#fff8f5">
     <meta name="description" content="Dua tahun, ribuan cerita, dan satu orang yang selalu kupilih. Sebuah album cinta untuk Nanda Aula Selfiyana, dari Indra.">
     <meta name="robots" content="noindex, nofollow">
@@ -10,8 +10,8 @@
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="preload" href="{{ asset('fonts/cormorant.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="{{ asset('fonts/dm-sans.woff2') }}" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="{{ asset('css/anniversary.css') }}?v=2">
-    <script src="{{ asset('js/anniversary.js') }}?v=2" defer></script>
+    <link rel="stylesheet" href="{{ asset('css/anniversary.css') }}?v=3">
+    <script src="{{ asset('js/anniversary.js') }}?v=3" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Langsung ke cerita kita</a>
